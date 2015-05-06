@@ -1,0 +1,24 @@
+<mycms_xml>
+    <command value="add_new_language">
+        <language_name>Italiano - Italian</language_name>
+        <language_language>it_IT</language_language>
+    </command>
+</mycms_xml>
+
+<mycms_xml>
+    <command value="remove_language">
+        <language_language>it_IT</language_language>
+    </command>
+</mycms_xml>
+
+<mycms_xml>
+    <command value="add_new_style">
+        <style_name>test</style_name>
+    </command>
+</mycms_xml>
+
+<mycms_xml>
+    <command value="remove_style">
+        <style_name>test</style_name>
+    </command>
+</mycms_xml>
