@@ -2,10 +2,6 @@
 /*                     *\
 |	MYCMS - TProgram    |
 \*                     */
-/**
- *  @author Stefano V. - Tuttarealstep
- *  @package Index/Loader
- */
 
 //Define directory
 define( 'P_PATH' , dirname( __FILE__ ) . '/' );
@@ -113,4 +109,3 @@ if($my_theme->is_admin_url($match['target']) == false){
 }
 
 }
-
