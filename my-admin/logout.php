@@ -5,7 +5,6 @@
 
 hide_if_staff_not_logged();
 
-global $my_user;
+global $my_users;
 
-
-$my_user->logout_admin();
+$my_users->logout_admin();

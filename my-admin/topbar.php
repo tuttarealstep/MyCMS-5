@@ -3,6 +3,8 @@
 |	MYCMS - TProgram    |
 \*                     */
 
+global $my_theme;
+
 hide_if_staff_not_logged();
 
 define('PAGE_ID', 'admin_topbar');
@@ -33,12 +35,15 @@ define('PAGE_ID', 'admin_topbar');
                     <ul class="dropdown-menu dropdown-user">
                         <!-- <li><a href="{@siteURL@}/my-admin/"><i class="fa fa-user fa-fw"></i> <?php ea('topbar_li_user_profile') ?></a>
                         </li> -->
-                        <li><a href="{@siteURL@}/my-admin/settings_general"><i class="fa fa-gear fa-fw"></i> <?php ea('topbar_li_settings') ?></a>
+                        <li>
+                            <a href="{@siteURL@}/my-admin/settings_general"><i class="fa fa-gear fa-fw"></i> <?php ea('topbar_li_settings') ?></a>
                         </li> 
-                        <li><a href="{@siteURL@}"><i class="fa fa-sign-out fa-fw"></i> <?php ea('topbar_li_return_site') ?></a>
+                        <li>
+                            <a href="{@siteURL@}"><i class="fa fa-sign-out fa-fw"></i> <?php ea('topbar_li_return_site') ?></a>
                         </li>
                         <li class="divider"></li>
-                        <li><a href="{@siteURL@}/my-admin/logout"><i class="fa fa-sign-out fa-fw"></i> <?php ea('topbar_li_logout') ?></a>
+                        <li>
+                            <a href="{@siteURL@}/my-admin/logout"><i class="fa fa-sign-out fa-fw"></i> <?php ea('topbar_li_logout') ?></a>
                         </li>
                     </ul>
                     <!-- /.dropdown-user -->
@@ -50,7 +55,7 @@ define('PAGE_ID', 'admin_topbar');
                 <div class="sidebar-nav navbar-collapse">
                     <ul class="nav" id="side-menu">
                         <li>
-                            <a <?php if(PAGE_ID == 'admin_home'){ echo 'class="active"'; } ?> href="{@siteURL@}/my-admin/home"><i class="fa fa-dashboard fa-fw"></i> <?php ea('page_home_page_name'); ?></a>
+                            <a <?php if(PAGE_ID == 'admin_home'){ echo 'class="active"'; } ?> href="{@siteURL@}/my-admin/home"><?php if($my_theme->there_is_new_update()){ echo '<span class="badge" style="background-color: red">!</span> '; } ?><i class="fa fa-dashboard fa-fw"></i> <?php ea('page_home_page_name'); ?></a>
                         </li>
                         <li <?php if(PAGE_ID == 'admin_posts' || PAGE_ID == 'admin_posts_new'){ echo 'class="active"'; } ?>>
                               <a href="#"><i class="fa fa-thumb-tack fa-fw"></i>  <?php ea('page_posts_name'); ?><span class="fa arrow"></span></a>

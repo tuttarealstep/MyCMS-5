@@ -187,10 +187,11 @@ if(isset($_POST['save_settings_style'])) {
         if($user_rank >= 3){
             $settings_style_language = htmlentities($_POST['settings_style_language']);
             $settings_style_template = htmlentities($_POST['settings_style_template']);
+            $settings_style_template_language = htmlentities($_POST['settings_style_template_language']);
 
             if(save_settings('site_language', $settings_style_language) == false){ define("INDEX_ERROR", ea('error_page_settings_general_save', '1')); };
             if(save_settings('site_template', $settings_style_template) == false){ define("INDEX_ERROR", ea('error_page_settings_general_save', '1')); };
-
+            if(save_settings('site_template_language', $settings_style_template_language) == false){ define("INDEX_ERROR", ea('error_page_settings_general_save', '1')); };
 
             header("location: ".HOST."/my-admin/settings_style");
             exit;
@@ -231,7 +232,7 @@ if(isset($_POST['save_settings_xml_commands'])) {
                 }elseif($mycms_xml->command['value'] == "remove_style") {
                     if(empty($mycms_xml->command->style_name)){
                     } else {
-                        $my_db->query('DELETE FROM my_style WHERE style_name = :style_name LIMIT 1', array('style_name'=>$mycms_xml->command->style_name));
+                        $my_db->query('DELETE FROM my_style WHERE style_path_name = :style_path_name LIMIT 1', array('style_path_name'=>$mycms_xml->command->style_path_name));
                     }
                 }
             }

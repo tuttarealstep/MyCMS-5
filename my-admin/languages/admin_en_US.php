@@ -10,7 +10,6 @@ $language = array(
 			
 			//PAGE NAME
 			'page_login_page_name' => 'Administration Panel',
-			'page_home_page_name' => 'Home',
 			
 			//ERROR
 			'error_email_password' => "The email or password are incorrect.",
@@ -33,6 +32,7 @@ $language = array(
 			'topbar_li_return_site' => 'Return to site',
 			
 			//Dashboard
+			'page_home_page_name' => 'Dashboard',
 			'page_home_page_header' => 'Dashboard',
 			'page_home_general_info' => 'General Information',
 			'page_home_info_in_use' => 'You\'re are using',
@@ -42,7 +42,11 @@ $language = array(
 			'page_home_general_info_comments' => 'Comments',
 			'page_home_general_info_category' => 'Categories',
 			'page_home_danger_info' => 'MyCMS version <b>{@my_cms_version@}</b> is developing if you encounter bugs or other problems report them on GitHub!',
-			
+			'page_home_general_info_update_all' => 'There is a new version of MyCMS ( Core and Database, Your data will not be changed )',
+			'page_home_general_info_db_update' => 'There is a new version for the database of MyCMS( Your data will not be changed )',
+			'page_home_general_info_core_update' => 'There is a new version of MyCMS ( Core, Your data will not be changed )',
+			'page_home_general_info_button_update' => 'Update',
+
 			//Settings
 			'page_settings_page_name' => 'Settings',
 			'page_settings_general' => 'General',
@@ -60,7 +64,6 @@ $language = array(
 			'page_settings_site_mainteinance_off' => 'Maintenance Off',
 			'page_settings_site_reload_htaccess' => 'Reload .htaccess?',
 			'page_settings_site_reload_htaccess_button' => 'Reload',
-			
 			'page_settings_blog' => 'Blog',
 			'page_settings_blog_header' => 'Blog Settings',
 			'page_settings_blog_private' => 'Show Blog',
@@ -72,11 +75,12 @@ $language = array(
 			'page_settings_blog_comments_approve' => 'The comments made are approved?',
 			'page_settings_blog_comments_approve_on' => 'Yes',
 			'page_settings_blog_comments_approve_off' => 'No',
-
 			'page_settings_style' => 'Style',
 			'page_settings_style_header' => 'Style and Language Settings',
-			'page_settings_style_language'  => 'Site Language',
-			'page_settings_style_template'  => 'Site Template',
+			'page_settings_my_admin_language'  => 'MyAdmin Language',
+			'page_settings_theme_language'  => 'Theme Language',
+			'page_settings_theme_language_info'  => 'If you change theme remember of save before change language!',
+			'page_settings_style_template'  => 'Site Theme',
 
 			//Posts
 			'page_posts_name' => 'Post',
@@ -171,12 +175,10 @@ $language = array(
 			'page_category_check_button' => 'Do',
 			'page_category_delete_successfull' => 'Did you delete the category and successfully!',
 			'page_category_delete_empty_checklist' => 'You did not select any category!',
-			
 			'page_category_add_new_category' => 'Create new category',
 			'page_category_add_new_category_name' => 'Name',
 			'page_category_add_new_category_description' => 'Description',
 			'page_category_add_new_category_button' => 'Create',
-			
 			'page_category_delete_empty_name' => 'You must enter a name!',
 			'page_category_addedd_succesful' => 'Category Added successfully!',
 			'page_category_error_category_in_use' => 'Category already in use!',
@@ -209,7 +211,6 @@ $language = array(
 			'page_ranks_give_user_title' => 'Promote a user',
 			'page_ranks_give_user_email' => 'User Email',
 			'page_ranks_button_promote' => 'Promote',
-			
 			'page_ranks_error_1' => 'You have promoted the user successfully!',
 			'page_ranks_error_2' => 'The user does not exist!',
 			'page_ranks_error_3' => 'Enter the user\'s email',
@@ -270,12 +271,24 @@ $language = array(
 			'page_pages_edit_success_created' => 'Page modified successfully,',
 			'page_pages_edit_success_show' => 'Go to the page!',
 			'page_pages_edit_info' => '<b>You can use tag like: <br> siteURL , siteNAME , ###-no-footer-### <br> all inside " {@ " and " @} example: {@example@}"</b>',
-
 			'page_theme_manager' => 'Theme Manager',
 			'page_theme_manager_header' => 'Theme Manager',
 			'page_theme_manager_add_new_theme' => 'Add a new Theme',
 			'page_theme_manager_labe_json_url' => 'URL info.json',
 			'page_theme_manager_add_button' => 'Add',
-			'page_theme_manager_theme_by' => 'By'
+			'page_theme_manager_button_info' => 'Info',
+			'page_theme_manager_button_remove' => 'Remove',
+			'page_theme_manager_version_label' => 'Version',
+			'page_theme_manager_author_label' => 'Author',
+			'page_theme_manager_set_button' => 'Set',
+			'page_theme_manager_theme_by' => 'By',
+
+            //Update Page
+			'page_update_page_name' => 'Update',
+			'page_update_return_back' => 'Return Back',
+			'page_update_changelog' => 'Changelog',
+			'page_update_update_button' => 'Update',
+            'page_update_alert' => 'Don\'t close the page, if you close you may have some errors!',
+			'page_update_info_process' => 'Do not close the page you will be automatically redirected at the end of the process!'
 );
 ?>

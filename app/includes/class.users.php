@@ -510,6 +510,17 @@ class MY_Users{
         }
     }
 
+    public function logout_admin()
+    {
+        if(staff_logged_in()){
+
+            $this->delete_stored_cookies_admin($_SESSION['staff']['id']);
+
+                unset($_SESSION['staff']);
+                session_destroy();
+                header("Location: ".HOST."");
+        }
+    }
 
 }
 
@@ -522,6 +533,7 @@ function user_logged_in(){
     endif;
 
 }
+
 function user_not_logged_in(){
 
     if(isset($_SESSION['user']['id'])):
@@ -531,6 +543,7 @@ function user_not_logged_in(){
     endif;
 
 }
+
 function staff_logged_in(){
 
     if(isset($_SESSION['staff']['id'])):
@@ -593,6 +606,18 @@ function isStaff(){
 
     } else {
         return false;
+    }
+}
+
+function isAdmin(){
+    global $my_users;
+    if(staff_logged_in()){
+        $user_rank = $my_users->getInfo($_SESSION['staff']['id'], 'rank');
+        if($user_rank >= 3){
+            return true;
+        } else {
+            return false;
+        }
     }
 }
 add_functions_tag("{@hide_if_logged=start@}", "{@hide_if_logged=end@}", "hide_if_logged");

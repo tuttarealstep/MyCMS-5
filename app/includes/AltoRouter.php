@@ -1,5 +1,6 @@
 <?php
-
+//MyCMS 5 use AltoRouter class:
+//AltoRouter WebSite: http://altorouter.com/
 class AltoRouter {
 
 	protected $routes = array();

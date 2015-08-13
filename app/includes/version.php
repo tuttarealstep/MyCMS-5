@@ -3,12 +3,11 @@
 |	MYCMS - TProgram    |
 \*         			   */
 
-//Versione CMS
-/*==================*\
-| CMS Version
-| Updated 11/02/2015
-\*==================*/
-$my_cms_version = '0.0.5.0';
+//Versione CMS - DB
+$my_cms_version = '0.0.5.5'; //CMS
+$my_cms_db_version = '0.0.1'; //DATABASE
+
+
 //Versione PHP
 /*======================*\
 | PHP Version

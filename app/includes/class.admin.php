@@ -2,13 +2,18 @@
 /*                     *\
 |	MYCMS - TProgram    |
 \*                     */
-
 $my_admin_folder_name = "{-@my-admin@-}";
+
+global $my_router;
 
 $my_router->map( 'GET', '/my-admin/', $my_admin_folder_name.'index');
 $my_router->map( 'GET', '/my-admin/index', $my_admin_folder_name.'index');
 $my_router->map( 'GET', '/my-admin/login', $my_admin_folder_name.'login');
 $my_router->map( 'POST', '/my-admin/login', $my_admin_folder_name.'login');
+
+$my_router->map( 'GET', '/my-admin/logout', $my_admin_folder_name.'logout');
+$my_router->map( 'POST', '/my-admin/logout', $my_admin_folder_name.'logout');
+
 $my_router->map( 'GET', '/my-admin/ranks', $my_admin_folder_name.'ranks');
 $my_router->map( 'POST', '/my-admin/ranks', $my_admin_folder_name.'ranks');
 $my_router->map( 'POST', '/my-admin/menu', $my_admin_folder_name.'menu');
@@ -36,4 +41,26 @@ $my_router->map( 'POST', '/my-admin/posts_edit/[i:id]', $my_admin_folder_name.'p
 $my_router->map( 'GET', '/my-admin/theme_manager', $my_admin_folder_name.'theme_manager');
 $my_router->map( 'POST', '/my-admin/theme_manager', $my_admin_folder_name.'theme_manager');
 
+$my_router->map( 'GET', '/my-admin/theme_manager/remove/[i:remove]', $my_admin_folder_name.'theme_manager');
+$my_router->map( 'POST', '/my-admin/theme_manager/remove/[i:remove]', $my_admin_folder_name.'theme_manager');
+
+
+$my_router->map( 'GET', '/my-admin/theme_manager/info/[i:info]', $my_admin_folder_name.'theme_manager');
+$my_router->map( 'POST', '/my-admin/theme_manager/info/[i:info]', $my_admin_folder_name.'theme_manager');
+
+$my_router->map( 'GET', '/my-admin/update', $my_admin_folder_name.'update');
+$my_router->map( 'POST', '/my-admin/update', $my_admin_folder_name.'update');
+
 $my_router->map( 'GET', '/my-admin/[*:page]', $my_admin_folder_name.'page');
+
+
+if(isAdmin()){
+    global $my_theme;
+    if(!isset($_SESSION['my-admin']['notification']['dashboard'])){
+       if($my_theme->there_is_new_update()){
+           $_SESSION['my-admin']['notification']['dashboard'] = $my_theme->there_is_new_update(false);
+       } else {
+           unset($_SESSION['my-admin']['notification']['dashboard']);
+       }
+    }
+}

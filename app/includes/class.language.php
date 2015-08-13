@@ -13,8 +13,22 @@ if(!defined(MY_LANGUAGE)){
     }
 }
 
+if(!defined(MY_LANGUAGE_THEME)){
+    $site_language = get_settings_value('site_template_language');
+    if(!empty($site_language)){
+        define('MY_LANGUAGE_THEME', $site_language);
+    }else{
+        define('MY_LANGUAGE_THEME', 'en_US');
+    }
+}
 
 function get_language(){
+
+    return MY_LANGUAGE_THEME;
+
+}
+
+function get_language_admin(){
 
     return MY_LANGUAGE;
 
@@ -27,7 +41,7 @@ function e($string, $display = '0'){
         MY_Error::error_die("00STYLE", "Template not found!");
     }
 
-    $file_language_name = ''.MY_LANGUAGE;
+    $file_language_name = ''.MY_LANGUAGE_THEME;
     $path = $theme_path . '/languages/';
 
     @include($path.$file_language_name.'.php');

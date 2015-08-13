@@ -11,7 +11,7 @@ define('PAGE_NAME', ea('page_home_page_name', '1'));
 get_file_admin('header');
 get_page_admin('topbar');
 
-global $my_db;
+global $my_db, $my_theme;
 ?>
 	<div id="page-wrapper">
             <div class="row">
@@ -19,6 +19,24 @@ global $my_db;
                     <h1 class="page-header"><?php ea('page_home_page_header'); ?></h1>
                 </div>
                 <!-- /.col-lg-12 -->
+                <?php
+                $info = $my_theme->there_is_new_update(false);
+                if($info[0] == true){
+                    switch  ($info[1])
+                    {
+                        case 'all_update':
+                            $update_text = ea('page_home_general_info_update_all', true);
+                            break;
+                        case 'core_update':
+                            $update_text = ea('page_home_general_info_core_update', true);
+                            break;
+                        case 'db_update':
+                            $update_text = ea('page_home_general_info_db_update', true);
+                            break;
+                    }
+                    echo '<div class="col-lg-12"><div class="alert alert-danger"><span class="badge" style="background-color: red">!</span> <b>' . $update_text . '</b> <a href="{@siteURL@}/my-admin/update" class="btn btn-info" style="float: right; margin-top: -6px;">'. ea('page_home_general_info_button_update', true) .'</a></div></div>';
+                }
+                ?>
             </div>
             <!-- /.row -->
             <div class="row">
@@ -55,7 +73,7 @@ global $my_db;
                 </div>
                 <!-- /.col-lg-6 -->
                 <div class="col-lg-6">
-                   <div class="alert alert-danger"><?php ea('page_home_danger_info'); ?></div>
+                   <div class="alert alert-info"><?php ea('page_home_danger_info'); ?></div>
                 </div>
                 <!-- /.col-lg-6 -->
             </div>

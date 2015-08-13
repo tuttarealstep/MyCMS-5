@@ -1,3 +1,8 @@
+
+
+DON'T USE THIS COMMANDS IF YOU AREN'T DEVELOPER
+
+
 <mycms_xml>
     <command value="add_new_language">
         <language_name>Italiano - Italian</language_name>

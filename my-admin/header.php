@@ -9,6 +9,8 @@ else:
 $page_name = ': '.PAGE_NAME;
 endif;
 
+no_robots();
+
 ?>
 <!DOCTYPE html>
 <html>

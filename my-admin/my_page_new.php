@@ -3,7 +3,7 @@
 |	MYCMS - TProgram    |
 \*                     */
 
-global  $my_db, $my_users, $my_blog;
+global  $my_db, $my_users, $my_blog, $my_theme;
 hide_if_staff_not_logged();
 
 define('PAGE_ID', 'admin_pages_new');
@@ -85,7 +85,7 @@ get_style_script_admin('script');
                 </div>
                 <br />
                 <div class="form-group">
-                    <textarea name="pages_content" style="height:300px;"><?php echo $pages['content']; ?></textarea>
+                    <textarea name="pages_content" style="height:300px;"><?php echo $my_theme->no_tags($pages['content']); ?></textarea>
                 </div>
             </div>
             <!-- /.col-lg-8 -->

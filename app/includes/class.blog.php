@@ -28,7 +28,7 @@ class MY_Blog {
 					 break;
 					 case 'title':
 					 	$informazione = $my_db->single("SELECT postTITLE FROM my_blog WHERE postID = :blog_id LIMIT 1", array('blog_id'=>$id));
-						echo fix_text(htmlspecialchars($informazione));
+						echo htmlspecialchars($informazione);
 					 break;
 					 case 'content':
 					 	$informazione = $my_db->single("SELECT postCONT FROM my_blog WHERE postID = :blog_id LIMIT 1", array('blog_id'=>$id));
@@ -82,7 +82,7 @@ class MY_Blog {
 					 break;
 					 case 'title':
 					 	$informazione = $my_db->single("SELECT postTITLE FROM my_blog WHERE postID = :blog_id LIMIT 1", array('blog_id'=>$id));
-						return fix_text(htmlspecialchars($informazione));
+						return htmlspecialchars($informazione);
 					 break;
 					 case 'content':
 					 	$informazione = $my_db->single("SELECT postCONT FROM my_blog WHERE postID = :blog_id LIMIT 1", array('blog_id'=>$id));

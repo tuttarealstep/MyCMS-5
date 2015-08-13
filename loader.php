@@ -2,6 +2,10 @@
 /*                     *\
 |	MYCMS - TProgram    |
 \*                     */
+/**
+ *  @author Stefano V. - Tuttarealstep
+ *  @package Index/Loader
+ */
 
 //Define directory
 define( 'P_PATH' , dirname( __FILE__ ) . '/' );
@@ -24,14 +28,17 @@ if(MY_M_DEBUG === false) {
 } else {
     error_reporting(E_ALL);
 }
-global $my_cms_version, $my_php_version, $my_mysql_version;
+
+define( 'MY_CMS_WEBSITE' , 'http://tprogram.altervista.org/mycms' );
+
+global $my_cms_version, $my_php_version, $my_mysql_version, $my_cms_db_version;
 require_once( I_PATH . '/version.php' );
 require_once( I_PATH . '/class.error.php' );
 require_once( I_PATH . '/check.php' );
 require_once( I_PATH . '/class.db.php' );
 $GLOBALS['my_db'] = new MY_Db();
 require_once( I_PATH . '/class.settings.php' );
-require_once( I_PATH . '/function.start.php' );
+require_once( I_PATH . '/functions.start.php' );
 
 my_check_php_version();
 my_check_mysql();
@@ -87,25 +94,32 @@ if($my_api->is_api()){
 
 $my_router->setBasePath(MY_BASE_PATH);
 $match = $my_router->match();
-
+//print_r($match);
 add_tag('my_cms_welcome_h1', e('my_cms_welcome_h1', 1));
+
+
+if(is_in_console()){
+    define(LOADER_LOAD_PAGE, false);
+    $my_theme->start_console_mode();
+}
 
 
 if(LOADER_LOAD_PAGE){
 
-
-if(empty($match['target'])){
-    $match['target'] = "404";
-}
-
-if($my_theme->is_admin_url($match['target']) == false){
-    $my_theme->control_maintenance($match['target']);
-    $info = load_database_page($match['target']);
-    if($info == false){
-        $my_theme->load_theme($match['target'], $match['params']);
+    if(empty($match['target'])){
+        $style_info = $my_theme->style_info(MY_THEME);
+        $match['target'] = $style_info["style_error_file"];
     }
-} else {
-    $my_theme->admin_load_theme($match['target'], $match['params']);
-}
+
+    if($my_theme->is_admin_url($match['target']) == false){
+        $my_theme->control_maintenance($match['target']);
+        $info = load_database_page($match['target']);
+        if($info == false){
+            $my_theme->load_theme($match['target'], $match['params']);
+        }
+    } else {
+        $my_theme->admin_load_theme($match['target'], $match['params']);
+    }
 
 }
+

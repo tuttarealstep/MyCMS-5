@@ -170,7 +170,7 @@ if(get_settings_value('blog_private') == 'false'){
 					$count = $my_db->single("SELECT * FROM my_blog");
 						if($count > 0){
 							foreach($get_archive as $row) {
-								echo "<li class='list-group-item'><p class='pull-left'>&bull;&nbsp;</p><a class='pull-left' href='{@siteURL@}".add_space($row['postPERMALINK'])."'>".fix_text(htmlspecialchars($row['postTITLE']))."</a> &nbsp;<p class='pull-left'>&raquo;</p> <span class='pull-right' style='color: #808080;'>".$row['postDATE']."</span></li>";
+								echo "<li class='list-group-item'><p class='pull-left'>&bull;&nbsp;</p><a class='pull-left' href='{@siteURL@}".add_space($row['postPERMALINK'])."'>".htmlspecialchars($row['postTITLE'])."</a> &nbsp;<p class='pull-left'>&raquo;</p> <span class='pull-right' style='color: #808080;'>".$row['postDATE']."</span></li>";
 							}
 						} else {
 							echo "<h5>".e('blog_a_no_posts', '1')."</h5>";

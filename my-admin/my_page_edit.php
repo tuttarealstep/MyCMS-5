@@ -3,7 +3,7 @@
 |	MYCMS - TProgram    |
 \*                     */
 
-global  $my_db, $my_users, $my_blog;
+global  $my_db, $my_users, $my_blog,$my_theme;
 hide_if_staff_not_logged();
 
 define('PAGE_ID', 'admin_pages_edit');
@@ -23,6 +23,7 @@ if(isset($_GET['id'])){
             $pageid = my_sql_secure($_GET['id']);
             $pages['title'] = $my_db->single("SELECT pageTITLE FROM my_page WHERE pageID = '".$_GET['id']."' LIMIT 1");
             $pages['content'] = $my_db->single("SELECT pageHTML FROM my_page WHERE pageID = '".$_GET['id']."' LIMIT 1");
+            $pages['URL'] = $my_db->single("SELECT pageURL FROM my_page WHERE pageID = '".$_GET['id']."' LIMIT 1");
         }
     } else {
         header('Location: '.HOST.'/my-admin/home');
@@ -43,7 +44,7 @@ if(isset($_POST['pages_new_create'])) {
         $pages_menu_id = my_generate_random(5).$pages_title;
 
         $my_db->query("UPDATE my_page SET pageTITLE = '$pages_title', pageHTML = '$pages_content'WHERE pageID = '".$pageid."'");;
-        $info = '<div class="row"><div class="alert alert-success">'.ea('page_pages_edit_success_created', '1').' <a href="'.$page_url.'">'.ea('page_pages_edit_success_show', '1').'</a></div>';
+        $info = '<div class="row"><div class="alert alert-success">'.ea('page_pages_edit_success_created', '1').' <a href="'. $pages['URL'] .'">'.ea('page_pages_edit_success_show', '1').'</a></div>';
         $pages['title'] = $_POST['pages_title'];
         $pages['content'] = $_POST['pages_content'];
     } else {
@@ -97,7 +98,7 @@ get_style_script_admin('script');
                 </div>
                 <br />
                 <div class="form-group">
-                    <textarea name="pages_content" style="height:300px;"><?php echo $pages['content']; ?></textarea>
+                    <textarea name="pages_content" style="height:300px;"><?php echo $my_theme->no_tags($pages['content']); ?></textarea>
                 </div>
             </div>
             <!-- /.col-lg-8 -->

@@ -10,7 +10,6 @@ $language = array(
 			
 			//PAGE NAME
 			'page_login_page_name' => 'Pannello di Amministrazione',
-			'page_home_page_name' => 'Home',
 			
 			//ERROR
 			'error_email_password' => 'L\' E-mail o la password sono errati.',
@@ -43,8 +42,12 @@ $language = array(
 			'page_home_general_info_comments' => 'Commenti',
 			'page_home_general_info_category' => 'Categorie',
 			'page_home_danger_info' => 'MyCMS versione <b>{@my_cms_version@}</b> è in via di sviluppo se incontrate bug o altri problemi segnalateli su GITHUB!',
-			
-			//Settings
+	        'page_home_general_info_update_all' => 'È presente una nuova versione di MyCMS ( Core e Database, I tuoi dati non verranno modifcati )',
+	        'page_home_general_info_db_update' => 'È presente una nuova versione per il database di MyCMS( I tuoi dati non verranno modificati )',
+	        'page_home_general_info_core_update' => 'È presente una nuova versione di MyCMS ( Core, I tuoi dati non verranno modificati )',
+            'page_home_general_info_button_update' => 'Aggiorna',
+
+            //Settings
 			'page_settings_page_name' => 'Impostazioni',
 			'page_settings_general' => 'Generali',
 			'page_settings_page_header' => 'Impostazioni Generali',
@@ -61,7 +64,6 @@ $language = array(
 			'page_settings_site_mainteinance_off' => 'Manutenzione Disattivata',
 			'page_settings_site_reload_htaccess' => 'Aggiorna .htaccess?',
 			'page_settings_site_reload_htaccess_button' => 'Aggiorna',
-			
 			'page_settings_blog' => 'Blog',
 			'page_settings_blog_header' => 'Impostazioni Blog',
 			'page_settings_blog_private' => 'Mostra Blog',
@@ -73,12 +75,12 @@ $language = array(
 			'page_settings_blog_comments_approve' => 'I commenti inseriti vanno approvati?',
 			'page_settings_blog_comments_approve_on' => 'Si',
 			'page_settings_blog_comments_approve_off' => 'No',
-
 			'page_settings_style' => 'Stile',
 			'page_settings_style_header' => 'Impostazioni Stile e Lingua',
-		    'page_settings_style_language'  => 'Lingua del sito',
-			'page_settings_style_template'  => 'Template sito',
-
+		    'page_settings_my_admin_language'  => 'Lingua per MyAdmin',
+			'page_settings_theme_language'  => 'Lingua del Tema',
+			'page_settings_theme_language_info'  => 'Se cambi tema prima di cambiare lingua salva!',
+			'page_settings_style_template'  => 'Tema sito',
 
 			//Posts
 			'page_posts_name' => 'Post',
@@ -128,7 +130,6 @@ $language = array(
 			'page_posts_new_error_content' => 'Inserisci il contenuto',
 			'page_posts_new_success_posted' => 'Articolo postato con successo,',
 			'page_posts_new_success_show' => 'Vai all\' articolo!',
-			'page_posts_new_error_title' => 'Inserisci un titolo',
 			
 			//Posts Edit
 			'admin_posts_edit' => 'Modifica Post',
@@ -145,7 +146,6 @@ $language = array(
 			'page_posts_edit_new_error_content' => 'Inserisci il contenuto',
 			'page_posts_edit_new_success_posted' => 'Articolo modificato con successo,',
 			'page_posts_edit_new_success_show' => 'Vai all\' articolo!',
-			'page_posts_edit_new_error_title' => 'Inserisci un titolo',
 			
 			//Commenti
 			'page_comments_page_name' => 'Commenti',
@@ -175,12 +175,10 @@ $language = array(
 			'page_category_check_button' => 'Esegui',
 			'page_category_delete_successfull' => 'Hai eliminato la/e categoria/e con successo!',
 			'page_category_delete_empty_checklist' => 'Non hai selezionato nessuna categoria!',
-			
 			'page_category_add_new_category' => 'Crea una nuova categoria',
 			'page_category_add_new_category_name' => 'Nome',
 			'page_category_add_new_category_description' => 'Descrizione',
 			'page_category_add_new_category_button' => 'Crea',
-			
 			'page_category_delete_empty_name' => 'Devi inserire un nome!',
 			'page_category_addedd_succesful' => 'Categoria Inserita con successo!',
 			'page_category_error_category_in_use' => 'Categoria già in uso!',
@@ -213,12 +211,10 @@ $language = array(
 			'page_ranks_give_user_title' => 'Promuovi un utente',
 			'page_ranks_give_user_email' => 'Email utente',
 			'page_ranks_button_promote' => 'Promuovi',
-			
 			'page_ranks_error_1' => 'Hai promosso l\' utente con successo!',
 			'page_ranks_error_2' => 'L\' utente non esiste!',
 			'page_ranks_error_3' => 'Inserisci l\' email dell\' utente',
 			'page_ranks_error_4' => 'Non hai i permessi per promuovere un utente',
-
 
 			//XML COMMAND
 			'page_settings_xml_command' => 'Comando/i xml',
@@ -227,7 +223,6 @@ $language = array(
 			'page_settings_xml_command_text' => 'Inserisci:',
 
 			//USERS BAN
-			'page_users_bans_page_name' => 'Banna utenti',
 			'page_users_bans_page_name' => 'Banna utenti',
 			'page_ban_user_title' => 'Banna un utente',
 			'page_ban_user_email' => 'Email utente:',
@@ -276,12 +271,24 @@ $language = array(
 			'page_pages_edit_success_created' => 'Pagina modificata con successo!,',
 			'page_pages_edit_success_show' => 'Vai alla pagina!',
 			'page_pages_edit_info' => '<b>Puoi usare anche tag come: <br> siteURL , siteNAME , ###-no-footer-### <br> tutte dentro a "{@" e "@}" esempio: {@example@}</b>',
-
 			'page_theme_manager' => 'Gestione Temi',
 			'page_theme_manager_header' => 'Gestione Temi',
 			'page_theme_manager_add_new_theme' => 'Aggiungi un nuovo Tema',
 			'page_theme_manager_labe_json_url' => 'URL info.json',
 			'page_theme_manager_add_button' => 'Aggiungi',
-			'page_theme_manager_theme_by' => 'Di'
+			'page_theme_manager_button_info' => 'Info',
+			'page_theme_manager_button_remove' => 'Rimuovi',
+			'page_theme_manager_version_label' => 'Versione',
+			'page_theme_manager_author_label' => 'Autore',
+			'page_theme_manager_set_button' => 'Imposta',
+			'page_theme_manager_theme_by' => 'Di',
+
+            //Update Page
+			'page_update_page_name' => 'Aggiorna',
+            'page_update_return_back' => 'Torna in dietro',
+            'page_update_changelog' => 'Changelog:',
+            'page_update_update_button' => 'Aggiorna',
+            'page_update_alert' => 'Non chiudere la pagina durante il processo di download e backup del cms, la chiusura porterebbe ad errori!',
+			'page_update_info_process' => 'Non chiudere la pagina sarai automaticamente reindirizzato al termine del processo!'
 );
 ?>

@@ -16,6 +16,7 @@
 | '$my_cms_version' and '$my_cms_version'
 | You can find them in the 'version.php' file.
 \*====================================================*/
+
 function my_check_php_version() {
 
     global $my_php_version, $my_cms_version;

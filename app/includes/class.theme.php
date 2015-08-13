@@ -16,6 +16,8 @@ class MY_theme {
     public $script_admin_panel = array();
     public $css_admin_panel = array();
 
+    public $small_page = false;
+
     function __construct() {
 
     }
@@ -51,13 +53,23 @@ class MY_theme {
         require_once($path_file);
     }
 
-    function load_theme($file, $param){
+    function remove_space($page){
+        $output = str_replace(array("\r\n", "\r"), "\n", $page);
+        $lines = explode("\n", $output);
+        $new_lines = array();
 
+        foreach ($lines as $i => $line) {
+            if(!empty($line))
+                $new_lines[] = trim($line);
+        }
+        return implode($new_lines);
+    }
+
+    function load_theme($file, $param){
             $theme_path = self::get_theme_path();
             if(!file_exists ($theme_path)) {
                 MY_Error::error_die("00STYLE", "Template not found!");
             }
-
 
             foreach ($this->extension_array as $file_ext) {
                 if (file_exists($theme_path . "/" . $file . $file_ext)) {
@@ -66,6 +78,7 @@ class MY_theme {
                     break;
                 }
             }
+			
             if ($file_found) {
                 ob_start();
                 if (!empty($param)) {
@@ -76,23 +89,37 @@ class MY_theme {
                 include($theme_path . "/" . $file . $file_found_ext);
                 $page_loaded = ob_get_contents();
                 ob_end_clean();
+
+                /*$config = array('indent' => true, 'input-xml'=>true, 'output-xhtml' => true, 'wrap' => 200);
+                $tidy = new tidy;
+                $tidy->parseString($page_loaded, $config, 'utf8');*/
+
+                //Remove Space
+                if($this->small_page == true){
+                    $page_loaded = $this->remove_space($page_loaded);
+                }
                 self::set_page($page_loaded, $file, false);
             } else {
-                if ($file = "404") {
+                $style_info = $this->style_info(MY_THEME);
+                if ($file == $style_info["style_error_file"]) {
                     My_Error::error_die("404", "FILE NOT FOUND");
                 }
-                header('Location: ' . HOST . '/404');
+                header('Location: ' . HOST . '/'.$style_info["style_error_file"]);
                 return false;
             }
     }
 
     function set_page($page, $url, $admin){
 
+        $timer_start = microtime(true);
         $page = self::set_TAG($page);
         $page = self::set_TAG_FUNCTIONS($page);
 
         if($admin == false){
         }
+
+        $finished = number_format(microtime(true) - $timer_start, 3);
+        $page = $page . "\n<!-- MyCMS Page Loader - Page loaded in " . $finished . " sec. -->";
         echo $page;
     }
 
@@ -121,9 +148,26 @@ class MY_theme {
             $page = str_ireplace('{@'.$tag.'@}', $value, $page);
         }
 
+        //NO TAGS
+        $page = str_ireplace('{@no_siteURL@}', "{@siteURL@}" , $page);
+        $page = str_ireplace('{@no_siteNAME@}', "{@siteNAME@}" , $page);
+        $page = str_ireplace('{@no_siteTEMPLATE@}', "{@siteTEMPLATE@}" , $page);
+        $page = str_ireplace('{@no_siteLANGUAGE@}', "{@siteLANGUAGE@}" , $page);
+        $page = str_ireplace('{@no_siteDESCRIPTION@}', "{@siteDESCRIPTION@}" , $page);
+        $page = str_ireplace('{@no_my_cms_welcome_h1@}', "{@my_cms_welcome_h1@}" , $page);
 
         return $page;
 
+    }
+
+    public function no_tags($page){
+        $page = str_ireplace('{@siteURL@}', "{@no_siteURL@}" , $page);
+        $page = str_ireplace('{@siteNAME@}', "{@no_siteNAME@}" , $page);
+        $page = str_ireplace('{@siteTEMPLATE@}', "{@no_siteTEMPLATE@}" , $page);
+        $page = str_ireplace('{@siteLANGUAGE@}', "{@no_siteLANGUAGE@}" , $page);
+        $page = str_ireplace('{@siteDESCRIPTION@}', "{@no_siteDESCRIPTION@}" , $page);
+        $page = str_ireplace('{@my_cms_welcome_h1@}', "{@no_my_cms_welcome_h1@}" , $page);
+        return $page;
     }
 
     public function set_TAG_FUNCTIONS($page){
@@ -338,13 +382,37 @@ class MY_theme {
                 }
                 break;
             case 'footer':
-                echo "\n\n<!-- START Plugin -->\n\n";
-                    $my_plugins->include_plugins("footer");
-                echo "\n\n<!-- FINISH Plugin -->\n\n";
                 if(!empty($name)){
                     $load_file = 'footer-'.$name.'.php';
                 }
                 $load_file = 'footer.php';
+                if($page_loader == true){
+                    ob_start();
+                    include($theme_path . '/'.$load_file);
+                    $set = ob_get_contents();
+                    ob_end_clean();
+                    return $set;
+                } else {
+                    echo "\n\n<!-- START Plugin -->\n\n";
+                    $my_plugins->include_plugins("footer");
+                    echo "\n\n<!-- FINISH Plugin -->\n\n";
+                    require_once($theme_path . '/'.$load_file);
+                }
+                break;
+            case 'page_loader_top':
+                $load_file = 'page_loader_top.php';
+                if($page_loader == true){
+                    ob_start();
+                    include($theme_path . '/'.$load_file);
+                    $set = ob_get_contents();
+                    ob_end_clean();
+                    return $set;
+                } else {
+                    require_once($theme_path . '/'.$load_file);
+                }
+                break;
+            case 'page_loader_bottom':
+                $load_file = 'page_loader_bottom.php';
                 if($page_loader == true){
                     ob_start();
                     include($theme_path . '/'.$load_file);
@@ -465,9 +533,10 @@ class MY_theme {
             }
         }
 
-        if($url !== 'maintenance'){
+        $info = $this->style_info(MY_THEME);
+        if($url !== $info['style_maintenance_page']){
                 if($maintenance == true){
-                    header('Location: '.HOST.'/maintenance');
+                    header('Location: '.HOST.'/'.$info['style_maintenance_page']);
                 exit;
                 }
         }
@@ -527,6 +596,49 @@ class MY_theme {
         }
     }
 
+    function theme_update($version, $url){
+        global $my_cms_version;
+        $download_url = $url;
+        $get_info = @json_decode(file_get_contents($download_url), true);
+
+        $theme_version = @$get_info["theme_version"];
+        $theme_my_cms_version = @$get_info["my_cms_version"];
+
+        if(version_compare($version, $theme_version, '<')){
+            if( version_compare($theme_my_cms_version, $my_cms_version, '<=') ){
+                return [true, $theme_version, true, $theme_my_cms_version];
+            } else {
+                return [true, $theme_version, false, $theme_my_cms_version];
+            }
+        } else {
+                return [false, $theme_version, false, $theme_my_cms_version];
+        }
+
+    }
+
+    function remove_dir($dir) {
+        if (is_dir($dir)) {
+            $files = scandir($dir);
+            foreach ($files as $file)
+                if ($file != "." && $file != "..") remove_dir("$dir/$file");
+            rmdir($dir);
+        }
+        else if (file_exists($dir)) unlink($dir);
+    }
+
+    function folder_copy($src, $dst) {
+        if (file_exists ( $dst ))
+            remove_dir ( $dst );
+        if (is_dir ( $src )) {
+            mkdir ( $dst );
+            $files = scandir ( $src );
+            foreach ( $files as $file )
+                if ($file != "." && $file != "..")
+                    $this->folder_copy ( "$src/$file", "$dst/$file" );
+        } else if (file_exists ( $src ))
+            copy ( $src, $dst );
+    }
+
     function download_theme($url)
     {
         global $my_cms_version, $my_db;
@@ -538,34 +650,59 @@ class MY_theme {
         $theme_author = @$get_info["theme_author"];
         $theme_zip_file_name = @$get_info["theme_zip_file_name"];
         $my_cms_version_cms = @$get_info["my_cms_version"];
+        $theme_error_page = @$get_info["theme_error_page"];
+        $theme_maintenance_page = @$get_info["theme_maintenance_page"];
+        $theme_version = @$get_info["theme_version"];
+        $theme_languages = @$get_info["theme_languages"];
 
         if (empty($theme_name)) {
-            return '<div class="alert alert-danger"> Error Download </div>';
+            return '<div class="alert alert-danger"> Error Download 1</div>';
         }
         if (empty($theme_author)) {
-            return '<div class="alert alert-danger"> Error Download  </div>';
+            return '<div class="alert alert-danger"> Error Download 2</div>';
         }
         if (empty($theme_zip_file_name)) {
-            return '<div class="alert alert-danger"> Error Download </div>';
+            return '<div class="alert alert-danger"> Error Download 3</div>';
         }
         if (empty($my_cms_version_cms)) {
-            return '<div class="alert alert-danger"> Error Download  </div>';
+            return '<div class="alert alert-danger"> Error Download 4</div>';
         }
-
+        if (empty($theme_error_page)) {
+            return '<div class="alert alert-danger"> Error Download 5</div>';
+        }
+        if (empty($theme_maintenance_page)) {
+            return '<div class="alert alert-danger"> Error Download 6</div>';
+        }
+        if (empty($theme_version)) {
+            return '<div class="alert alert-danger"> Error Download 7</div>';
+        }
+        if (empty($theme_languages)) {
+            return '<div class="alert alert-danger"> Error Download 8</div>';
+        }
         if ($my_cms_version_cms != $my_cms_version) {
             return '<div class="alert alert-danger"> Error Download - <b>Wrong MyCMS Version</b> </div>';
         }
 
         $zipname = $theme_zip_file_name . '.zip';
 
-        if (file_exists("./app/content/theme/" . $theme_zip_file_name)) {
+        if (file_exists( P_PATH_S . "/app/content/theme/" . $theme_zip_file_name)) {
             return '<div class="alert alert-danger"> Error Download - <b>Another Theme with this name</b> </div>';
         }
 
+        ignore_user_abort(true);
+        set_time_limit(0);
+
         $download_path = str_replace('/info.json', '', $download_url);
 
-        $dir = "./app/content/theme/" . $theme_zip_file_name;
-        mkdir($dir, 0777);
+        $dir = ".".MY_BASE_PATH."/tmp/" . $theme_zip_file_name;
+        $real_path = ".".MY_BASE_PATH."/app/content/theme/" . $theme_zip_file_name;
+
+        if (!mkdir($dir, 0755, true)) {
+            return '<div class="alert alert-danger"> Error Download - <b>Can\'t create tmp folder, check permission!</b> </div>';
+        }
+        if (!mkdir($real_path, 0755, true)) {
+            return '<div class="alert alert-danger"> Error Download - <b>Can\'t create theme folder, check permission!</b> </div>';
+        }
 
         $info = file_get_contents($download_path . "/" . $zipname);
         file_put_contents($dir . '/' . $zipname, $info);
@@ -575,13 +712,305 @@ class MY_theme {
             $zip_extract->extractTo($dir . '/');
             $zip_extract->close();
         } else {
-            return '<div class="alert alert-danger"> Error ZIP - <b>Can\'t Open</b> </div>';
+            return '<div class="alert alert-danger"> Error ZIP - <b>Can\'t Open, check Extension!</b> </div>';
         }
 
         unlink($dir . '/' . $zipname);
 
-        $my_db->query("INSERT INTO my_style (style_name,style_author,style_path) VALUES (:style_name,:style_author,:style_path)", array('style_name'=>$theme_name,'style_author'=>$theme_author,'style_path'=>$theme_zip_file_name));
+
+        $source = $dir . '/';
+        $destination = $real_path . "/";
+        $this->folder_copy($source, $destination);
+
+        remove_dir(".".MY_BASE_PATH."/tmp");
+        $my_db->query("INSERT INTO my_style (style_name,style_author,style_path_name,style_error_file,style_maintenance_page,style_json_file_url,style_version,style_languages) VALUES (:style_name,:style_author,:style_path_name,:style_error_file,:style_maintenance_page,:style_json_file_url,:style_version,:style_languages)", array('style_name'=>$theme_name,'style_author'=>$theme_author,'style_path_name'=>$theme_zip_file_name, 'style_error_file'=>$theme_error_page, 'style_maintenance_page'=>$theme_maintenance_page, 'style_json_file_url'=>$download_url, 'style_version'=>$theme_version, 'style_languages'=>$theme_languages));
     }
+
+    public function style_info($style){
+        global $my_db;
+        if(!empty($style)){
+            $test = $my_db->iftrue("SELECT style_id FROM my_style WHERE style_path_name = :style_path_name", array("style_path_name" => my_sql_secure($style)));
+            if($test){
+                $style_info =$my_db->row("SELECT * FROM my_style WHERE style_path_name = :style_path_name", array("style_path_name" => my_sql_secure($style)));
+                return $style_info;
+            }
+        }
+        return false;
+    }
+
+    public function there_is_new_update($check = true){
+
+        global $my_cms_version, $my_cms_db_version;
+
+        $get_info = @json_decode(file_get_contents( MY_CMS_WEBSITE . "/update/update.json"), true);
+
+        $my_cms_core_update = @$get_info["my_cms_core_update"];
+        $my_cms_db_update = @$get_info["my_cms_db_update"];
+        $my_cms_changelog_array = @$get_info["my_cms_changelog_array"];
+        $my_cms_db_changelog_array = @$get_info["my_cms_db_changelog_array"];
+
+        if($my_cms_core_update != '' && $my_cms_db_update != ''){
+            if(version_compare($my_cms_core_update,$my_cms_version, '>') && version_compare($my_cms_db_update, $my_cms_db_version, '>')) {
+                $info = 'all_update';
+                $cms_version = $my_cms_core_update;
+                $db_version = $my_cms_db_update;
+                $changelog_array = $my_cms_changelog_array;
+                $changelog_array = array_merge($changelog_array, $my_cms_db_changelog_array);
+                $return = true;
+            } elseif(version_compare($my_cms_core_update,$my_cms_version, '>')) {
+                $info = 'core_update';
+                $cms_version = $my_cms_core_update;
+                $db_version = '';
+                $changelog_array = $my_cms_changelog_array;
+                $return = true;
+            } elseif(version_compare($my_cms_db_update, $my_cms_db_version, '>')){
+                $info = 'db_update';
+                $cms_version = '';
+                $db_version = $my_cms_db_update;
+                $changelog_array = $my_cms_db_changelog_array;
+                $return = true;
+            } else {
+                $info = '';
+                $return = false;
+            }
+        } else {
+            $info = '';
+            $return = false;
+        }
+
+        if($check){
+            return $return;
+        } else {
+            return [$return, $info, $cms_version, $db_version, $changelog_array];
+        }
+    }
+
+    function console_first_text(){
+        global $my_cms_version;
+        $string = "  __  __        _____ __  __  _____ \n"; $string .= " |  \/  |      / ____|  \/  |/ ____|\n";$string .= " | \  / |_   _| |    | \  / | (___  \n";$string .= " | |\/| | | | | |    | |\/| |\___ \ \n";$string .= " | |  | | |_| | |____| |  | |____) |\n";$string .= " |_|  |_|\__, |\_____|_|  |_|_____/ \n";$string .= "          __/ |                     \n";$string .= "         |___/                      \n"; $string .= "               Version $my_cms_version\n"; $string .= "               Console Mode\n";
+        return $string;
+    }
+
+
+    function show_status($done, $total, $size=30) {
+
+        static $start_time;
+
+        if($done > $total) return;
+
+        if(empty($start_time)) $start_time=time();
+        $now = time();
+
+        $perc=(double)($done/$total);
+
+        $bar=floor($perc*$size);
+
+        $status_bar="\r [";
+        $status_bar.=str_repeat('*', $bar);
+        if($bar<$size){
+            $status_bar.='*';
+            $status_bar.=str_repeat('.', $size-$bar);
+        } else {
+            $status_bar.='*';
+        }
+
+        $disp=number_format($perc*100, 0);
+
+        $status_bar.="] $disp%  $done/$total";
+
+        $rate = ($now-$start_time)/$done;
+        $left = $total - $done;
+        $eta = round($rate * $left, 2);
+
+        $elapsed = $now - $start_time;
+
+        echo " $status_bar  ";
+
+        flush();
+
+        // when done, send a newline
+        if($done == $total) {
+            echo "\n";
+        }
+
+    }
+
+
+    function progress_bar($start, $max){
+        for($done=$start;$done<=$max;$done++){
+            $this->show_status($done, $max);
+            usleep(100000);
+        }
+    }
+
+    function console_a_w($str){
+        if(MY_CMS_CONSOLE_MODE == true){
+            echo "[MY-ADMIN] ".$str;
+        }
+    }
+
+    function start_console_mode(){
+        echo $this->console_first_text();
+        define("MY_CMS_CONSOLE_MODE", true);
+        //Start Loading
+        //$this->progress_bar(1, 100);
+        //Show menu
+        echo "Welcome to MyCMS Console Mode\n";
+        echo "Type a command ('help' for list of commands)'\n";
+        while(true){
+            $command = trim(fgets(fopen("php://stdin", "r")));
+            switch ($command){
+                case 'help':
+                    echo "This is the list of all commands you can do:\n";
+                    echo "  help ( list of command with hint )\n";
+                    echo "  exit ( exit from my-cms console mode )\n";
+                    echo "  mycms (-v for version, -dbv for database version )\n";
+                    echo "  my-admin-mode ( enter in my-admin mode for manage the website)\n";
+                    break;
+                case 'exit':
+                    echo "Exit from MyCMS Console Mode...\n";
+                    sleep(1);
+                    exit();
+                    break;
+                case 'mycms':
+                    echo "Please use mycms [-v | -dbv] only one for time\n";
+                    break;
+                case 'mycms -v':
+                    global $my_cms_version;
+					echo "-------------------------------\n";
+                    echo "MyCMS Version $my_cms_version\n";
+					echo "-------------------------------\n";
+                    break;
+                case 'mycms -dbv':
+                    global $my_cms_db_version;
+					echo "-------------------------------\n";
+                    echo "MyCMS Database Version $my_cms_db_version\n";
+					echo "-------------------------------\n";
+                    break;
+                case 'my-admin-mode':
+                    global $my_users;
+                    echo "For use this mod please login with admin account\n";
+                    $try = true;
+                    $success = false;
+                    while($try == true) {
+                        echo "Email:\n";
+                        $email = trim(fgets(fopen("php://stdin", "r")));
+                        echo "Password:\n";
+                        $password  = trim(fgets(fopen("php://stdin", "r")));
+
+                        $mail = htmlentities(my_sql_secure($email));
+                        $password = htmlentities(my_sql_secure($password));
+                        $login = $my_users->login_admin($mail,$password, false);
+                        if( $login["login"] == 1 ){
+                            $success = true;
+                            $try = false;
+                        } else {
+                            echo "\n";
+                            echo ea($login["error"], '1')."\n";
+                            echo "\n";
+                            $try = false;
+                        }
+
+                        if($success == true && $try == false){
+                            echo "Success...!\n";
+                            echo "\n";
+                            $complete_name = $my_users->getInfo($_SESSION['staff']['id'], 'name').' '.$my_users->getInfo($_SESSION['staff']['id'], 'surname');
+                            $user_rank = $my_users->getInfo($_SESSION['staff']['id'], 'rank');
+                            if($user_rank >= 3) {
+                                $this->console_a_w("Welcome $complete_name\n");
+                                $this->console_a_w("Type a command ('help' for list of commands)'\n");
+                                $admin_mode = true;
+                                while ($admin_mode == true) {
+                                    $command_admin = trim(fgets(fopen("php://stdin", "r")));
+                                    switch ($command_admin) {
+                                        case 'help':
+                                            $this->console_a_w("This is the list of all commands you can do:\n");
+                                            $this->console_a_w("    exit mode ( Exit from admin mode )\n");
+                                            $this->console_a_w("    enable | disable ( -maintenance )\n");
+                                            $this->console_a_w("    set ( -site_name | -site_description | -site_url )\n");
+                                            break;
+                                        case 'set -site_name':
+                                            $this->console_a_w("Write name for website:\n");
+                                            $site_name = htmlentities(fgets(fopen("php://stdin", "r")));
+                                            if(save_settings('site_name', $site_name) == false){
+                                                $this->console_a_w(ea('error_page_settings_general_save', '1'));
+                                            } else {
+                                                $this->console_a_w("Site Name changed in $site_name !\n");
+                                            }
+                                            break;
+                                        case 'set -site_description':
+                                            $this->console_a_w("Write description for website:\n");
+                                            $site_description = htmlentities(fgets(fopen("php://stdin", "r")));
+                                            if(save_settings('site_description', $site_description) == false){
+                                                $this->console_a_w(ea('error_page_settings_general_save', '1'));
+                                            } else {
+                                                $this->console_a_w("Site Description changed in $site_description !\n");
+                                            }
+                                            break;
+                                        case 'set -site_url':
+                                            $this->console_a_w("Write url for website (Warning!!!):\n");
+                                            $site_url = htmlentities(fgets(fopen("php://stdin", "r")));
+                                            if(save_settings('site_url', $site_url) == false){
+                                                $this->console_a_w(ea('error_page_settings_general_save', '1'));
+                                            } else {
+                                                $this->console_a_w("Site Url changed in $site_url !\n");
+                                            }
+                                            break;
+                                        case 'enable -maintenance':
+                                            if(save_settings('site_maintenance', "true") == false){
+                                                $this->console_a_w(ea('error_page_settings_general_save', '1'));
+                                            } else {
+                                                $this->console_a_w("Maintenance enabled!\n");
+                                            }
+                                            break;
+                                        case 'disable -maintenance':
+                                            if(save_settings('site_maintenance', "false") == false){
+                                                $this->console_a_w(ea('error_page_settings_general_save', '1'));
+                                            } else {
+                                                $this->console_a_w("Maintenance disabled!\n");
+                                            }
+                                            break;
+                                        case 'exit mode':
+                                            $this->console_a_w("Exit from MyAdmin Mode..\n");
+                                            sleep(1);
+                                            $admin_mode = false;
+                                            echo "Bye...\n";
+                                            echo "\n";
+                                            break;
+                                        default:
+                                            $this->console_a_w("Command not found! Please type 'help'\n");
+                                    }
+                                }
+                            } else {
+                                $this->console_a_w("You are not admin (rank 3)\n");
+                                sleep(1);
+                                echo "Bye...\n";
+                                echo "\n";
+                                break;
+                            }
+                        } else {
+                            echo "Do you want retry? (y | n)\n";
+                            $retry  = trim(fgets(fopen("php://stdin", "r")));
+                            if($retry == 'y'){
+                                $try = true;
+                            } else {
+                                echo "Bye...\n";
+                                sleep(1);
+                                echo "\n";
+                            }
+                        }
+
+                    }
+                    break;
+                default:
+                    echo "Command not found! Please type 'help'\n";
+            }
+        }
+
+
+    }
+
+
 }
 
 function set_TAG($page){

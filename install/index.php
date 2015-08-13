@@ -1,4 +1,6 @@
 <?php
+ini_set('max_execution_time', 300);
+set_time_limit(0);
 /*                     *\
 |	MYCMS - TProgram    |
 \*                     */
@@ -15,6 +17,7 @@ error_reporting( E_CORE_ERROR | E_CORE_WARNING | E_COMPILE_ERROR | E_ERROR | E_W
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name='robots' content='noindex,follow' />
 <title>MyCMS - Step[<?php echo $step; ?>]</title>
 <link href="./css/bootstrap.min.css" rel="stylesheet">
 </head>
@@ -110,19 +113,20 @@ if(isset($_POST['config_button'])){
             }
         }
 
-        $query = "INSERT INTO `my_cms_settings` (`settings_id`, `settings_name`, `settings_value`) VALUES
-(1, 'site_name', 'MyCMS 5'),
-(2, 'site_url', '".$site_url_db."'),
-(3, 'site_template', 'default'),
-(4, 'site_timezone', 'Europe/Rome'),
-(5, 'site_language', 'it_IT'),
-(6, 'blog_post_control_comments', '0'),
-(7, 'site_description', 'Welcome in MyCMS 5'),
-(8, 'site_maintenance', 'false'),
-(9, 'blog_private', 'false'),
-(10, 'blog_comments_active', 'true'),
-(11, 'blog_comments_approve', 'false'),
-(12, 'site_use_cache', 'false');";
+        $query =    "INSERT INTO my_cms_settings (settings_id, settings_name, settings_value) VALUES
+                    (1, 'site_name', 'MyCMS 5'),
+                    (2, 'site_url', 'http://localhost'),
+                    (3, 'site_template', 'default'),
+                    (4, 'site_timezone', 'Europe/Rome'),
+                    (5, 'site_language', 'en_US'),
+                    (6, 'blog_post_control_comments', '0'),
+                    (7, 'site_description', 'Welcome in MyCMS 5'),
+                    (8, 'site_maintenance', 'false'),
+                    (9, 'blog_private', 'false'),
+                    (10, 'blog_comments_active', 'true'),
+                    (11, 'blog_comments_approve', 'false'),
+                    (12, 'site_use_cache', 'false'),
+                    (13, 'site_template_language', 'en_US');";
 
         try
         {
@@ -164,29 +168,51 @@ if(isset($_POST['config_button'])){
 //KEY
 	
 	define('SESSION_KEY_GENERATE', true);
-	define('SESSION_KEY', 'MYCMS');
-	
+	define('SESSION_KEY', 'MYCMS_".my_generate_random(6)."');
 	define('SECRET_KEY', '".my_generate_random(50)."');
+	define('CRYPT_KEY', '".my_generate_random(50)."');
 ";
 
 
-		$file_complete_htaccess = "<IfModule mod_rewrite.c>
+		$file_complete_htaccess = '<IfModule mod_rewrite.c>
 RewriteEngine On
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteRule . index.php [L]
 </IfModule>
-";
+';
 		$file_config_htaccess = '../.htaccess';
 		$file_folder_htaccess = '../';
-		
+
+        $file_complete_webconfig = '<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <system.webServer>
+        <rewrite>
+            <rules>
+                <rule name="MyCMS Rule" stopProcessing="true">
+                    <match url="." ignoreCase="false" />
+                    <conditions logicalGrouping="MatchAll">
+                        <add input="{REQUEST_FILENAME}" matchType="IsFile" ignoreCase="false" negate="true" />
+                    </conditions>
+                    <action type="Rewrite" url="/index.php" />
+                </rule>
+            </rules>
+        </rewrite>
+    </system.webServer>
+</configuration>
+';
+        $file_config_webconfig = '../web.config';
+        $file_folder_webconfig = '../';
+
 		if(file_exists($file_config_htaccess) && is_writable($file_folder_htaccess) || is_writable($file_config_htaccess)){
-			
 			$file_1 = @fopen($file_config_htaccess, 'w');
 			fwrite($file_1, $file_complete_htaccess);
-			
-			
 		}
-		
+
+       if(file_exists($file_config_webconfig) && is_writable($file_folder_webconfig) || is_writable($file_config_webconfig)){
+            $file_2 = @fopen($file_config_webconfig, 'w');
+            fwrite($file_2, $file_complete_webconfig);
+		}
+
 		
 		if(file_exists($file_config) && is_writable($file_folder) || is_writable($file_config)){
 			
@@ -210,7 +236,7 @@ RewriteRule . index.php [L]
         <?php echo $info; ?>
             <div class="col-md-8">
             <h1><b>Basic</b> Settings!</h1><br>
-           	Basic settings to connect to the database!*<b>This file needs permission to read and write!</b>
+           	Basic settings to connect to the database!*<b>This file needs permission to read and write, and in next time the cms need this permission for download update/themes!</b>
             </div>
             <!-- /.col-md-4 -->
         </div>
@@ -268,7 +294,7 @@ if(isset($_POST['user_button'])) {
     $user_name = $_POST['user_name'];
     $user_surname = $_POST['user_surname'];
 
-    if (version_compare(phpversion(), '5.6.0', '>')){
+    if (version_compare(phpversion(), '5.5.0', '>=')){
 
         $options = [
             'cost' => 8,
@@ -382,7 +408,7 @@ if(isset($_POST['user_button'])) {
                 <hr>
                	<p>You've completed all of the steps you can now delete the folder: <b><?php echo  dirname( __FILE__ ); ?></b>* !</p>
                 <br>
-				<small>* Do not rename it, delete the folder with all the files for the security of your site.</small>
+				<small>* Do not rename it, delete the folder with all the files for the security of your web site.</small>
                 <hr>
                 <div class="row">
                     <div class="col-lg-12">

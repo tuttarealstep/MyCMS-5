@@ -13,6 +13,7 @@ get_page_admin('topbar');
 
 $language_language = get_settings_value('site_language');
 $settings_style_template_cms = get_settings_value('site_template');
+$settings_style_template_language = get_settings_value('site_template_language');
 
 global $my_db;
 
@@ -29,7 +30,7 @@ global $my_db;
         <div class="col-lg-6">
             <form role="form" method="post" action="">
                 <div class="form-group">
-                    <label><?php ea('page_settings_style_language'); ?></label>
+                    <label><?php ea('page_settings_my_admin_language'); ?></label>
                     <select name="settings_style_language" id="settings_style_language" class="form-control">
                         <?php
                         $lang = $my_db->query("SELECT * FROM my_language");
@@ -48,16 +49,27 @@ global $my_db;
                         $temp = $my_db->query("SELECT * FROM my_style");
                         $i = 0; foreach($temp as $template){ $i++;
                             ?>
-                            <option <?php if($settings_style_template_cms == $template['style_name']){ echo 'selected=""'; }?> value="<?php echo $template['style_name']; ?>"><?php echo $template['style_name']; ?></option>
+                            <option <?php if($settings_style_template_cms == $template['style_path_name']){ echo 'selected=""'; }?> value="<?php echo $template['style_path_name']; ?>"><?php echo $template['style_name']; ?></option>
                         <?php
                         }
                         ?>
                     </select>
                 </div>
-
+                <div class="form-group">
+                    <label><?php ea('page_settings_theme_language'); ?> <small>(<?php ea('page_settings_theme_language_info'); ?>)</small></label>
+                    <select name="settings_style_template_language" id="settings_style_template_language" class="form-control">
+                        <?php
+                        $temp = $my_db->row("SELECT * FROM my_style WHERE style_path_name = :style_path_name", ['style_path_name' => $settings_style_template_cms]);
+                        $language = explode(',', $temp['style_languages']);
+                        for($i = 0; $i < count($language); $i++){
+                            ?>
+                            <option <?php if($settings_style_template_language == $language[$i]){ echo 'selected=""'; }?> value="<?php echo $language[$i]; ?>"><?php echo $language[$i]; ?></option>
+                        <?php
+                        }
+                        ?>
+                    </select>
+                </div>
                 <input type="submit" name="save_settings_style" class="btn btn-success" value="<?php ea('page_settings_site_button_save'); ?>" />
-
-
             </form>
         </div>
     </div>

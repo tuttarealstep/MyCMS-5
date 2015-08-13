@@ -48,7 +48,7 @@ if(isset($_POST['posts_new_edit_button'])) {
 				$posts_content = addslashes($_POST['posts_content']);
 				$date = date('d/m/Y H.i.s', time());
 				$category = addslashes($_POST['category']);
-				$author = $my_users->getInfo($_SESSION['user']['id'], 'name').'_'.$my_users->getInfo($_SESSION['user']['id'], 'surname');
+				$author = $my_users->getInfo($_SESSION['staff']['id'], 'name').'_'.$my_users->getInfo($_SESSION['staff']['id'], 'surname');
 				$permalink = $posts['permalink'];
 				/*$finder = $my_blog->permalinkfinder($permalink);
 				if($finder == true){

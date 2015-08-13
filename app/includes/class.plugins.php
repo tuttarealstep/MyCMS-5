@@ -18,8 +18,6 @@ class MY_Plugins {
         switch ($file){
             case "header":
 
-
-
                 break;
 
             case "footer";

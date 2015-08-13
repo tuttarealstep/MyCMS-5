@@ -4,7 +4,7 @@
 \*                     */
 hide_if_staff_not_logged();
 
-global $my_date, $my_db, $my_user, $my_blog;
+global $my_date, $my_db, $my_blog;
 define('PAGE_ID', 'admin_category');
 define('PAGE_NAME', ea('page_category_name', '1'));
 

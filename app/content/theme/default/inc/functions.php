@@ -15,11 +15,20 @@ if(version_compare($GLOBALS['my_cms_version'], $template['cms_version'], '<' )) 
 }
 global $my_router, $my_theme;
 
+//NECESSARY PAGE DON'T REMOVE
 //PAGE
+$style_info = $my_theme->style_info(MY_THEME);
 $my_router->map( 'GET', '/', 'index');
 $my_router->map( 'GET', '/index', 'index');
 $my_router->map( 'GET', '/404', '404');
 $my_router->map( 'GET', '/maintenance', 'maintenance');
+//BLOG RULE
+$my_router->map( 'GET', '/blog', 'blog');
+$my_router->map( 'GET', '/blog/[i:year]/[i:month]/[*:title]', 'blog');
+$my_router->map( 'GET', '/blog/id/[i:id]', 'blog');
+$my_router->map( 'GET', '/blog/category/[a:category]', 'blog');
+$my_router->map( 'GET', '/blog/author/[:author]', 'blog');
+$my_router->map( 'GET', '/blog/search/[:search]', 'blog');
 
 //LOGIN REGISTRATION
 $my_router->map( 'GET', '/logout', 'logout');
@@ -31,16 +40,6 @@ $my_router->map( 'POST', '/login', 'login');
 $my_router->map( 'GET', '/registration', 'registration');
 $my_router->map( 'POST', '/registration', 'registration');
 
-
-$my_router->map( 'GET', '/testsql', 'testsql');
-$my_router->map( 'POST', '/testsql', 'testsql');
-//BLOG RULE
-$my_router->map( 'GET', '/blog', 'blog');
-$my_router->map( 'GET', '/blog/[i:year]/[i:month]/[*:title]', 'blog');
-$my_router->map( 'GET', '/blog/id/[i:id]', 'blog');
-$my_router->map( 'GET', '/blog/category/[a:category]', 'blog');
-$my_router->map( 'GET', '/blog/author/[:author]', 'blog');
-$my_router->map( 'GET', '/blog/search/[:search]', 'blog');
 
 add_style_script('css', '{@siteURL@}/app/content/theme/{@siteTEMPLATE@}/css/style.css?fixx');
 add_style_script('css', '{@siteURL@}/app/content/theme/{@siteTEMPLATE@}/css/normalize.css');

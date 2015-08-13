@@ -48,3 +48,9 @@ function my_set_session_key(){
         $_SESSION['security']['session_key'] = SESSION_KEY;
     }
 }
+function is_in_console(){
+    if(php_sapi_name() == 'cli'){
+        return true;
+    }
+    return false;
+}

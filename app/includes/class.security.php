@@ -27,7 +27,7 @@ function my_generate_random($length) {
 function crypt_md5($value, $time = 1){
 
     for($i = 1; $i <= $time; $i++){
-        $value = md5(value);
+        $value = md5($value);
     }
     return $value;
 
@@ -115,4 +115,25 @@ function my_sql_secure($string){
     $string=str_replace('<','\<',$string);
 
     return strip_tags(trim($string));
+}
+
+function s_crypt($str){
+        $code1 = base64_encode(base64_encode($str));
+        $code2 = base64_encode(base64_encode(CRYPT_KEY));
+        $crypt = "my#cms" . $code1 . "my-cms" . $code2;
+        return base64_encode(base64_encode($crypt));
+}
+
+function s_decrypt($str){
+    $info1 = base64_decode(base64_decode($str));
+    preg_match_all("/my#cms(.*)my-cms(.*)/", $info1, $matches);
+
+    $info2 = base64_decode(base64_decode($matches[1][0]));
+    $info3 = base64_decode(base64_decode($matches[2][0]));
+
+    if($info3 != CRYPT_KEY){
+        return;
+    }
+
+    return $info2;
 }

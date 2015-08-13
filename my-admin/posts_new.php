@@ -23,8 +23,8 @@ if(isset($_POST['posts_new_create'])) {
 				$posts_content = addslashes($_POST['posts_content']);
 				$date = date('Y-m-d H:i:s', time());
 				$category = addslashes($_POST['category']);
-				$author = $my_users->getInfo($_SESSION['user']['id'], 'name').'_'.$my_users->getInfo($_SESSION['user']['id'], 'surname');
-				$permalink = '/blog/'.date('Y', time()).'/'.date('m', time()).'/'.$posts_title;
+				$author = $my_users->getInfo($_SESSION['staff']['id'], 'name').'_'.$my_users->getInfo($_SESSION['staff']['id'], 'surname');
+				$permalink = '/blog/'.date('Y', time()).'/'.date('m', time()).'/'.fix_text($posts_title);
 				$permalink = add_space($permalink);
 				$finder = $my_blog->permalinkfinder($permalink);
 				if($finder == true){
