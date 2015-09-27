@@ -115,7 +115,7 @@ if(isset($_POST['config_button'])){
 
         $query =    "INSERT INTO my_cms_settings (settings_id, settings_name, settings_value) VALUES
                     (1, 'site_name', 'MyCMS 5'),
-                    (2, 'site_url', 'http://localhost'),
+                    (2, 'site_url', 'http://".$site_url_db."'),
                     (3, 'site_template', 'default'),
                     (4, 'site_timezone', 'Europe/Rome'),
                     (5, 'site_language', 'en_US'),
