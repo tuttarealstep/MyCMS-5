@@ -27,7 +27,7 @@ if(isset($_GET['id'])){
 	}
 } elseif(isset($_GET['category'])){
 				$archive = "2";
-				$cat = my_sql_secure($_GET['category']);
+				$cat = urldecode(my_sql_secure($_GET['category']));
 				define('PAGE_NAME', $cat);
 				
 } elseif(isset($_GET['author'])){
