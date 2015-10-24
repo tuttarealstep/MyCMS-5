@@ -26,7 +26,7 @@ $my_router->map( 'GET', '/maintenance', 'maintenance');
 $my_router->map( 'GET', '/blog', 'blog');
 $my_router->map( 'GET', '/blog/[i:year]/[i:month]/[*:title]', 'blog');
 $my_router->map( 'GET', '/blog/id/[i:id]', 'blog');
-$my_router->map( 'GET', '/blog/category/[a:category]', 'blog');
+$my_router->map( 'GET', '/blog/category/[:category]', 'blog');
 $my_router->map( 'GET', '/blog/author/[:author]', 'blog');
 $my_router->map( 'GET', '/blog/search/[:search]', 'blog');
 
